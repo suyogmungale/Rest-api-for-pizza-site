@@ -4,7 +4,8 @@ import bcrypt from 'bcrypt';
 import User from '../models/user.js';
 import customeErrorHandler from "../services/customeErrorHandler.js";
 import JwtService from "../services/JwtService.js";
-
+import {REFRESH_SECRET} from '../config/index.js'
+import refreshToken from "../models/refreshToken.js";
 
 const registerController = {
   async register(req, res, next) {
@@ -48,19 +49,21 @@ const registerController = {
    
     
     let access_token;
+    let refresh_token;
     try {
       const result = await user.save();
       //console.log(result);
       //token
        access_token = JwtService.sign({ _id: result._id, role:result.role});
+       refresh_token = JwtService.sign({ _id: result._id, role:result.role}, '1y', REFRESH_SECRET)
 
-
+    await refreshToken.create({token:refresh_token})
 
     } catch (error) {
       return next(error);
     }
 
-    res.json({ access_token:access_token });
+    res.json({ access_token:access_token, refresh_token });
   }
 };                                   
 

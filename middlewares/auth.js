@@ -12,20 +12,16 @@ const auth = async(req, res, next) => {
     return next(customeErrorHandler.unAuthorized());
   }
 
-  let token0 = authHeader.split('');
-  let token1  = token0[1];
-  req.token = token1;
-  next();
-
-  
-  console.log(token1);
+  const token = authHeader.split(" ")[1];
+  console.log(token);
 
   try {
     const {_id, role} = await JwtService.verify(token)
-    req.user = {};
-    req.user._id = _id;
-    req.user.role = role;
-
+    const user = {
+      _id,
+      role
+    }
+    req.user = user;
     next();
 
   } catch (error) {
