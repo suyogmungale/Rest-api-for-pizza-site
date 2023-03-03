@@ -20,6 +20,10 @@ class customeErrorHandler extends Error{
     static NotFound(massage = '404 Not Found'){
         return new customeErrorHandler(404, massage);
     }
+
+    static serverError (massage = 'internal server error'){
+        return new customeErrorHandler(500, massage);
+    }
 }
 
 export default  customeErrorHandler;

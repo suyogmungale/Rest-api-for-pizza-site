@@ -5,6 +5,8 @@ import registerController from "../controllers/registerControllers.js";
 import userController from "../controllers/userController.js";
 import auth from "../middlewares/auth.js";
 import refreshController from "../controllers/refreshController.js";
+import productController from "../controllers/productControlers.js";
+
 
 router.post("/api/register", registerController.register);
 
@@ -15,6 +17,8 @@ router.get("/api/me", auth, userController.me);
 router.post("/api/refresh", refreshController.refresh);
 
 router.post("/api/logout", auth, loginController.logout);
+
+router.post("/api/products",  productController.store);
 
 
 export default router;
