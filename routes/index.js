@@ -25,5 +25,9 @@ router.put("/api/products/:id",  productController.update);//[auth,admin] use he
 
 router.delete("/api/products/:id",  productController.distroy);
 
+router.get("/api/products",  productController.index);
+
+router.get("/api/products/:id",  productController.show);
+
 
 export default router;

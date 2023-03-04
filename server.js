@@ -35,6 +35,7 @@ app.use(express.urlencoded({extended:false}));
 app.use(express.json());
 app.use( routes);
 //app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use(errorHandler);
 app.listen(APP_PORT, () => {console.log(`listening on port${APP_PORT}`)})

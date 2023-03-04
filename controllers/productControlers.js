@@ -5,6 +5,7 @@ import fs from "fs";
 import customeErrorHandler from "../services/customeErrorHandler.js";
 import product from "../models/product.js";
 import Joi from "joi";
+import productSchema from "../validaters/validaters.js";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -47,13 +48,6 @@ const productController = {
       console.log(req.file);
       const filePath = req.file.path;
 
-      const productSchema = Joi.object({
-        name: Joi.string().required(),
-        price: Joi.number().required(),
-        size: Joi.string().required(),
-        image: Joi.string()
-      });
-
       const { error: validationError } = productSchema.validate(req.body);
       if (validationError) {
         fs.unlink(`${appRoot}/${filePath}`, (error) => {
@@ -90,12 +84,6 @@ const productController = {
         filePath = req.file.path;
       }
       
-      const productSchema = Joi.object({
-        name: Joi.string().required(),
-        price: Joi.number().required(),
-        size: Joi.string().required(),
-        image: Joi.string()
-      });
 
       if(req.file){
         const { error: validationError } = productSchema.validate(req.body);
@@ -114,7 +102,7 @@ const productController = {
       const { name, price, size } = req.body;
       let document;
       try {
-        document = await product.findOneAndUpdate({_id:req.params},{
+        document = await product.findOneAndUpdate({_id:req.params.id},{
           name,
           price,
           size,
@@ -135,13 +123,37 @@ const productController = {
       return next(new Error('nothing to delete'));
     }
     //image delete
-    const imagePath = document.image;
+    const imagePath = document._doc.image;
+    console.log(imagePath);
     fs.unlink(`${appRoot}/${imagePath}`, (error) =>{
       if(error){
         return next(customeErrorHandler.serverError(error.message));
       }
     });
     res.json(document)
+   },
+
+   async index(req, res, next){
+    let documents;
+    //mongoose-pagination
+    try {
+      documents = await product.find().select('-__v').sort({_id:-1});
+    } catch (error) {
+      return next(customeErrorHandler.serverError)
+      
+    }
+    return res.json(documents);
+   },
+
+   async show(req,res,next){
+    let document;
+    try {
+      document = await product.findOne({_id:req.params.id}).select('-__v')
+      console.log(document)
+    } catch (error) {
+      return next(customeErrorHandler.serverError)
+    }
+    return res.json(document);
    }
 
 };
