@@ -6,6 +6,7 @@ import userController from "../controllers/userController.js";
 import auth from "../middlewares/auth.js";
 import refreshController from "../controllers/refreshController.js";
 import productController from "../controllers/productControlers.js";
+import admin from "../middlewares/admin.js";
 
 
 router.post("/api/register", registerController.register);
@@ -18,7 +19,11 @@ router.post("/api/refresh", refreshController.refresh);
 
 router.post("/api/logout", auth, loginController.logout);
 
-router.post("/api/products",  productController.store);
+router.post("/api/products",  productController.store); //[auth,admin] use here
+
+router.put("/api/products/:id",  productController.update);//[auth,admin] use here
+
+router.delete("/api/products/:id",  productController.distroy);
 
 
 export default router;
